@@ -1,4 +1,5 @@
 from collections import defaultdict
+from copy import deepcopy
 
 with open("day_05/input.txt", "r") as f:
     # Replace instead of strip to keep leading whitespace
@@ -29,14 +30,27 @@ moves = [[int(i) for i in line.split(" ")[1::2]] for line in moves]
 # Part 1 #
 ##########
 
+state_dict_part_1 = deepcopy(state_dict)
+
 # After the rearrangement procedure completes, what crate ends up on top of each stack?
 for amount, from_, to in moves:
-    to_move = state_dict[from_][-amount:]
-    state_dict[from_] = state_dict[from_][:-amount]
+    to_move = state_dict_part_1[from_][-amount:]
+    state_dict_part_1[from_] = state_dict_part_1[from_][:-amount]
     # Crates are moved one by one, so order is reversed
-    state_dict[to].extend(to_move[::-1])
-print(f"Part 1: {''.join([state_dict[k][-1] for k in state_dict])}")
+    state_dict_part_1[to].extend(to_move[::-1])
+print(f"Part 1: {''.join([state_dict_part_1[k][-1] for k in state_dict_part_1])}")
 
 ##########
 # Part 2 #
 ##########
+
+state_dict_part_2 = deepcopy(state_dict)
+
+# Same as above but without reversing the moved crate stack
+for amount, from_, to in moves:
+    to_move = state_dict_part_2[from_][-amount:]
+    state_dict_part_2[from_] = state_dict_part_2[from_][:-amount]
+    # Crates are now moved at once, no reversal needed
+    state_dict_part_2[to].extend(to_move)
+
+print(f"Part 2: {''.join([state_dict_part_2[k][-1] for k in state_dict_part_2])}")
